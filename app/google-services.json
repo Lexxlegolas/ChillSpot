@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "120488985345",
+    "firebase_url": "https://chillspot-779fb.firebaseio.com",
+    "project_id": "chillspot-779fb",
+    "storage_bucket": "chillspot-779fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120488985345:android:71a13d2b2fd91c4c",
+        "android_client_info": {
+          "package_name": "com.example.chillspot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "120488985345-4n2v4hsknqsv15otvidta4f47lon57jn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chillspot",
+            "certificate_hash": "182ec51ab5b33cb47234bb784404fb7a2c37a9c2"
+          }
+        },
+        {
+          "client_id": "120488985345-hhf66ud9bk67hmpojl1u8pdcebgc84es.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkNGpHziPuxKqmIYmYT5Yn5Pwm_W-USLk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "120488985345-hhf66ud9bk67hmpojl1u8pdcebgc84es.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

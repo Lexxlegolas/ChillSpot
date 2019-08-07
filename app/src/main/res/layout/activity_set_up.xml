@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login"
+    tools:context=".SetUp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image_setup"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+         />
+
+    <EditText
+        android:id="@+id/name_setup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Full Name"
+        android:inputType="textMultiLine"
+        android:background="@drawable/inputs"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:drawableLeft="@drawable/name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image_setup" />
+
+    <EditText
+        android:id="@+id/user_name_setup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="User Name"
+        android:inputType="textMultiLine"
+        android:background="@drawable/inputs"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:drawableLeft="@drawable/username"
+        app:layout_constraintEnd_toEndOf="@+id/name_setup"
+        app:layout_constraintStart_toStartOf="@+id/name_setup"
+        app:layout_constraintTop_toBottomOf="@+id/name_setup" />
+
+    <EditText
+        android:id="@+id/country_setup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Country"
+        android:inputType="textMultiLine"
+        android:background="@drawable/inputs"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:drawableLeft="@drawable/country"
+        app:layout_constraintEnd_toEndOf="@+id/user_name_setup"
+        app:layout_constraintStart_toStartOf="@+id/user_name_setup"
+        app:layout_constraintTop_toBottomOf="@+id/user_name_setup" />
+
+    <Button
+        android:id="@+id/save_setup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/buttons"
+        android:text="Save"
+        android:textSize="20sp"
+        android:textColor="@android:color/background_light"
+        android:textAllCaps="false"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/country_setup" />
+</android.support.constraint.ConstraintLayout>
