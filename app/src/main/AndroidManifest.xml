@@ -13,10 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.Settings"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
+        <activity android:name=".profile.Profile"></activity>
+        <activity
+            android:name=".settings.Settings"
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".post.ClickPost" />
         <activity android:name=".post.Post" />
         <activity android:name=".SetUp" />

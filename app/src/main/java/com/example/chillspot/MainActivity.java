@@ -22,6 +22,7 @@ import com.example.chillspot.loginRegister.Login;
 import com.example.chillspot.models.Posts;
 import com.example.chillspot.post.ClickPost;
 import com.example.chillspot.post.Post;
+import com.example.chillspot.profile.Profile;
 import com.example.chillspot.settings.Settings;
 import com.example.chillspot.viewHolder.PostsViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity
                 sendUserToPost();
                 break;
             case R.id.nav_profile:
-                Toast.makeText(this, "profile", Toast.LENGTH_SHORT).show();
+                sendUserToProfile();
                 break;
             case R.id.nav_home:
                 Toast.makeText(this, "home", Toast.LENGTH_SHORT).show();
@@ -304,6 +305,12 @@ public class MainActivity extends AppCompatActivity
     private void sendUserToSetting()
     {
         Intent i = new Intent(this, Settings.class);
+        startActivity(i);
+    }
+
+    private void sendUserToProfile()
+    {
+        Intent i = new Intent(this, Profile.class);
         startActivity(i);
     }
 
