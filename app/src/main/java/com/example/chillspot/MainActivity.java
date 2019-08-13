@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.chillspot.loginRegister.Login;
 import com.example.chillspot.models.Posts;
+import com.example.chillspot.post.ClickPost;
 import com.example.chillspot.post.Post;
 import com.example.chillspot.viewHolder.PostsViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -173,6 +174,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull Posts model)
             {
+               final String postKey = getRef(position).getKey();
+
                 holder.postUserName.setText(model.getUserName());
                 holder.postDescription.setText(model.getDesc());
                 holder.postTime.setText("  " + model.getTime());
@@ -180,6 +183,17 @@ public class MainActivity extends AppCompatActivity
 
                 Picasso.get().load(model.getProfileImage()).placeholder(R.drawable.profile).into(holder.postProfileImage);
                 Picasso.get().load(model.getPostImage()).into(holder.postImage);
+
+                holder.itemView.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Intent i = new Intent(MainActivity.this, ClickPost.class);
+                        i.putExtra("postKey",postKey);
+                        startActivity(i);
+                    }
+                });
 
             }
 

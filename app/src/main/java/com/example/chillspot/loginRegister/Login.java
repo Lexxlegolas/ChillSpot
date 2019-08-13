@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class Login extends AppCompatActivity
     private Button loginBtn;
     private EditText email_l,password_l;
     private TextView register_l;
+    private ImageView google;
     private FirebaseAuth auth;
 
     @Override
@@ -75,6 +77,8 @@ public class Login extends AppCompatActivity
         password_l = findViewById(R.id.password_login);
 
         register_l = findViewById(R.id.register_text_view);
+
+        google = findViewById(R.id.google_login);
     }
 
     private void allowUserLogin()
