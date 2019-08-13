@@ -10,20 +10,27 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chillspot.loginRegister.Login;
+import com.example.chillspot.models.Posts;
 import com.example.chillspot.post.Post;
+import com.example.chillspot.viewHolder.PostsViewHolder;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -38,12 +45,13 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     private FirebaseAuth auth;
-    private DatabaseReference usersRef;
+    private DatabaseReference usersRef, postRef;
 
     private CircleImageView profImage;
     private TextView nameuser;
     private String currentUserId;
     private ImageButton addNewPostBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,6 +62,7 @@ public class MainActivity extends AppCompatActivity
         auth = FirebaseAuth.getInstance();
         currentUserId = auth.getCurrentUser().getUid();
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
         toolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(toolbar);
@@ -68,10 +77,18 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         navigationView = findViewById(R.id.navigation_view);
-        View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
+        recyclerView = findViewById(R.id.all_users_recycler);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
+        View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
         profImage = navView.findViewById(R.id.profile_image_nav);
         nameuser = navView.findViewById(R.id.user_name_nav);
+
+
 
         usersRef.child(currentUserId).addValueEventListener(new ValueEventListener()
         {
@@ -143,6 +160,40 @@ public class MainActivity extends AppCompatActivity
         {
             checkUserExistanceInDatabase();
         }
+
+        Query postDescendingOrder = postRef.orderByChild("counter");
+
+        FirebaseRecyclerOptions<Posts> options =
+                new FirebaseRecyclerOptions.Builder<Posts>()
+                .setQuery(postDescendingOrder, Posts.class)
+                .build();
+
+        FirebaseRecyclerAdapter<Posts, PostsViewHolder> adapter
+                = new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull PostsViewHolder holder, int position, @NonNull Posts model)
+            {
+                holder.postUserName.setText(model.getUserName());
+                holder.postDescription.setText(model.getDesc());
+                holder.postTime.setText("  " + model.getTime());
+                holder.postDate.setText("  " +model.getDate());
+
+                Picasso.get().load(model.getProfileImage()).placeholder(R.drawable.profile).into(holder.postProfileImage);
+                Picasso.get().load(model.getPostImage()).into(holder.postImage);
+
+            }
+
+            @NonNull
+            @Override
+            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i)
+            {
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.all_posts_layout, viewGroup, false);
+                PostsViewHolder holder = new PostsViewHolder(view);
+                return holder;
+            }
+        };
+            recyclerView.setAdapter(adapter);
+            adapter.startListening();
 
     }
 

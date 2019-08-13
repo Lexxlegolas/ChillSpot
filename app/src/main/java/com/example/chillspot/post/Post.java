@@ -1,5 +1,6 @@
 package com.example.chillspot.post;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,8 +47,12 @@ public class Post extends AppCompatActivity
     private FirebaseAuth auth;
     private String currentUserId, saveCurrentDate, saveCurrentTime, postRandomName;
     private String myUrl = "";
-    private DatabaseReference rootRef;
+    private DatabaseReference postsRef, userRef;
     private StorageTask uploadTask;
+    private String desc;
+    private ProgressDialog loadingbar;
+
+    private long countPosts = 0;
 
     private static final int Gallary_pick = 1;
 
@@ -59,7 +65,8 @@ public class Post extends AppCompatActivity
         auth = FirebaseAuth.getInstance();
         currentUserId = auth.getCurrentUser().getUid();
         postImagesRef = FirebaseStorage.getInstance().getReference();
-        rootRef = FirebaseDatabase.getInstance().getReference();
+        postsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+        userRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         selectPostImage = findViewById(R.id.select_post_image);
         updateBtn = findViewById(R.id.update_post_button);
@@ -70,6 +77,8 @@ public class Post extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Update Post");
+
+        loadingbar = new ProgressDialog(this);
 
         selectPostImage.setOnClickListener(new View.OnClickListener()
         {
@@ -88,7 +97,7 @@ public class Post extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                String desc = postDesc.getText().toString();
+                desc = postDesc.getText().toString();
 
                 if (imageUri == null)
                 {
@@ -100,11 +109,16 @@ public class Post extends AppCompatActivity
                 }
                 else
                 {
-                    post(desc);
+                    loadingbar.setTitle("Uploading Post");
+                    loadingbar.setMessage("Just a moment ...");
+                    loadingbar.setCanceledOnTouchOutside(false);
+                    loadingbar.show();
+                    post();
                 }
             }
         });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
@@ -119,7 +133,7 @@ public class Post extends AppCompatActivity
 
     }
 
-    private void post(final String desc)
+    private void post()
     {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
@@ -145,20 +159,44 @@ public class Post extends AppCompatActivity
                 }
                 return filePath.getDownloadUrl();
             }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>()
-        {
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUrl = task.getResult();
-                    myUrl = downloadUrl.toString();
-
-                    rootRef.child("Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+                if (task.isSuccessful())
+                {
+                    postsRef.addValueEventListener(new ValueEventListener()
+                    {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                String uName = dataSnapshot.child("userName").getValue().toString();
-                                String prpfImage = dataSnapshot.child("image").getValue().toString();
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                        {
+                            if (dataSnapshot.exists())
+                            {
+                                countPosts = dataSnapshot.getChildrenCount();
+                            }
+                            else
+                            {
+                                countPosts = 0;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    Uri downloadUrl = task.getResult();
+                    myUrl= downloadUrl.toString();
+
+                    userRef.child(currentUserId).addValueEventListener(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                        {
+                            if (dataSnapshot.exists())
+                            {
+                                final String uName = dataSnapshot.child("userName").getValue().toString();
+                                final String prpfImage = dataSnapshot.child("image").getValue().toString();
 
                                 HashMap postMap = new HashMap();
                                 postMap.put("uid", currentUserId);
@@ -168,17 +206,23 @@ public class Post extends AppCompatActivity
                                 postMap.put("desc", desc);
                                 postMap.put("profileImage", prpfImage);
                                 postMap.put("userName", uName);
+                                postMap.put("counter", countPosts);
 
-                                rootRef.child("Posts").child(currentUserId + postRandomName).updateChildren(postMap)
-                                        .addOnCompleteListener(new OnCompleteListener() {
+                                postsRef.child(currentUserId + postRandomName).updateChildren(postMap)
+                                        .addOnCompleteListener(new OnCompleteListener()
+                                        {
                                             @Override
-                                            public void onComplete(@NonNull Task task) {
-                                                if (task.isSuccessful()) {
+                                            public void onComplete(@NonNull Task task)
+                                            {
+                                                if (task.isSuccessful())
+                                                {
                                                     Toast.makeText(Post.this, "Post Updated Successfully", Toast.LENGTH_LONG).show();
                                                     sendUserToMain();
+                                                    loadingbar.dismiss();
                                                 } else {
                                                     String e = task.getException().getMessage();
                                                     Toast.makeText(Post.this, "Error : " + e, Toast.LENGTH_SHORT).show();
+                                                    loadingbar.dismiss();
                                                 }
                                             }
                                         });
@@ -192,9 +236,13 @@ public class Post extends AppCompatActivity
                     });
 
                 }
+                else
+                {
+                    String e = task.getException().getMessage();
+                    Toast.makeText(Post.this,"Error: " +e,Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     @Override
