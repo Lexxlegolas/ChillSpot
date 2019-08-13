@@ -22,6 +22,7 @@ import com.example.chillspot.loginRegister.Login;
 import com.example.chillspot.models.Posts;
 import com.example.chillspot.post.ClickPost;
 import com.example.chillspot.post.Post;
+import com.example.chillspot.settings.Settings;
 import com.example.chillspot.viewHolder.PostsViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -269,7 +270,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "messages", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                sendUserToSetting();
                 break;
             case R.id.nav_logout:
                 auth.signOut();
@@ -297,6 +298,12 @@ public class MainActivity extends AppCompatActivity
     private void sendUserToPost()
     {
         Intent i = new Intent(this, Post.class);
+        startActivity(i);
+    }
+
+    private void sendUserToSetting()
+    {
+        Intent i = new Intent(this, Settings.class);
         startActivity(i);
     }
 
